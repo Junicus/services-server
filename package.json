@@ -1,0 +1,36 @@
+{
+  "name": "services-server",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "repository": "git@github.com:Junicus/services-server.git",
+  "author": "Nelson Segarra <junicus@outlook.com>",
+  "license": "MIT",
+  "scripts": {
+    "prestart": "yarn run -s build",
+    "start": "node dist/index.js",
+    "dev": "nodemon src/index.js --exec \"node -r dotenv/config -r babel-register\"",
+    "clean": "rimraf dist",
+    "build": "yarn run clean && babel src -d dist"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "morgan": "^1.9.0",
+    "passport": "^0.4.0",
+    "passport-azure-ad": "^3.0.12"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "concurrently": "^3.5.1",
+    "nodemon": "^1.17.3",
+    "rimraf": "^2.6.2"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
