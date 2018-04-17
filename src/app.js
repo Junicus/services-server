@@ -3,45 +3,31 @@ import cors from 'cors';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import passport from 'passport';
-import { BearerStrategy as OIDCBearerStrategy } from 'passport-azure-ad';
+import { BearerStrategy } from 'passport-azure-ad';
 import routes from './routes';
 
-const oidcOptions = {
-  identityMetadata: process.env.IDENTITY_METADATA,
+const options = {
+  identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration/',
   clientID: process.env.CLIENT_ID,
+  issuer: process.env.ISSUER,
   validateIssuer: true,
+  loggingLevel: 'warn',
   passReqToCallback: false,
 };
 
-console.log(oidcOptions);
-
-let owner = null;
+const bearerStrategy = new BearerStrategy(options, (token, done) => {
+  done(null, {}, token);
+});
 
 const app = express();
 app.disable('x-powered-by');
-
 app.use(logger('dev'));
-
+app.use(passport.initialize());
+passport.use(bearerStrategy);
 app.use(cors());
-
 app.use(bodyParser.json());
 
-app.use(passport.initialize());
-app.use(passport.session());
-
-const bearerStrategy = new OIDCBearerStrategy(oidcOptions, (token, done) => {
-  console.log(token, 'was the token retrieved');
-  if (!token.oid)
-    done(new Error('oid is not found in token'));
-  else {
-    owner = token.oid;
-    done(null, token);
-  }
-});
-
-passport.use(bearerStrategy);
-
-app.use('/', passport.authenticate('oauth-bearer'), routes);
+app.use('/', routes);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');

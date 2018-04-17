@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import passport from 'passport';
 
 const routes = Router();
 
@@ -8,7 +9,11 @@ const getDateFromQuery = (date) => {
   return result;
 }
 
-routes.get('/summaries', (req, res) => {
+routes.get('/summaries', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+  var claims = req.authInfo;
+  console.log('User info: ', req.user);
+  console.log('Validated claims: ', claims);
+
   const { date } = req.query;
   const reqDate = getDateFromQuery(date);
   res.json({
@@ -17,7 +22,11 @@ routes.get('/summaries', (req, res) => {
   });
 });
 
-routes.get('/averages', (req, res) => {
+routes.get('/averages', passport.authenticate('oauth-bearer', { session: false }), (req, res) => {
+  var claims = req.authInfo;
+  console.log('User info: ', req.user);
+  console.log('Validated claims: ', claims);
+
   const { date } = req.query;
   const reqDate = getDateFromQuery(date);
   res.json({
