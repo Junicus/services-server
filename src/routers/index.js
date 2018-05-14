@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import passport from 'passport';
-import apiRoutes from './api';
+import apiRouter from './apiRouter';
 
 const routes = Router();
 
@@ -13,6 +13,6 @@ routes.get('/', passport.authenticate('oauth-bearer', { session: false }),
     res.status(200).json({ 'name': claims['name'] });
   });
 
-routes.use('/api', apiRoutes);
+routes.use('/api', apiRouter);
 
 export default routes;

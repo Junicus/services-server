@@ -4,14 +4,14 @@ import logger from 'morgan';
 import bodyParser from 'body-parser';
 import passport from 'passport';
 import { BearerStrategy } from 'passport-azure-ad';
-import routes from './routes';
+import routers from './routers';
 
 const options = {
   identityMetadata: 'https://login.microsoftonline.com/common/v2.0/.well-known/openid-configuration/',
   clientID: process.env.CLIENT_ID,
   issuer: process.env.ISSUER,
   validateIssuer: true,
-  loggingLevel: 'warn',
+  loggingLevel: 'info',
   passReqToCallback: false,
 };
 
@@ -27,7 +27,7 @@ passport.use(bearerStrategy);
 app.use(cors());
 app.use(bodyParser.json());
 
-app.use('/', routes);
+app.use('/', routers);
 
 app.use((req, res, next) => {
   const err = new Error('Not Found');
